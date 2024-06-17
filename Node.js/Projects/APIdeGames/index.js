@@ -79,8 +79,28 @@ var DB = {
 }
 
 app.get('/games', auth, (req,res) => {
+
+    var HATEOAS = [
+        {
+            href: "http://localhost:2002/game/id",
+            method: "GET",
+            rel: "get_game"
+        },
+        {
+            href: "http://localhost:2002/game/id",
+            method: "DELETE",
+            rel: "delete_game"
+        },
+        {
+            href: "http://localhost:2002/auth",
+            method: "POST",
+            rel: "login"
+        }
+    ]
+
     res.statusCode = 200;
-    res.json({user: req.loggedUser, data: DB.games})
+    res.json({user: req.loggedUser, data: DB.games, links: HATEOAS})
+
 });
 
 app.get('/game/:id', auth, (req,res) => {
@@ -209,7 +229,9 @@ app.post("/auth", (req,res) => {
         res.status(400);
         res.json({err: "email inválido"})
     }
-})
+});
+
+
 
 app.listen(2002, () => {
     console.log("API Online! Port: 2002");
